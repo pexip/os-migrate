@@ -1,0 +1,52 @@
+Description: Use legacy_alter_table ON in sqlite recreate_table
+Author: Corey Bryant <corey.bryant@canonical.com>
+Date: Fri, 7 Dec 2018 13:49:20 -0500
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+ Use "PRAGMA legacy_alter_table = ON" with sqlite >= 3.26 when
+ using "ALTER TABLE RENAME TO migration_tmp" to maintain legacy
+ behavior.
+ .
+ As of sqlite version 3.26, when a table is renamed using
+ "ALTER TABLE RENAME TO", REFERENCES clauses that refer to the
+ table will be updated. To maintain legacy (3.24 and earlier)
+ behavior, "PRAGMA legacy_alter_table" can be set to true and
+ "PRAGMA foreign_keys" can be set to false. [1]
+ .
+ [1] https://www.sqlite.org/src/info/ae9638e9c0ad0c36
+ .
+ Thanks to "László Böszörményi (GCS)" <gcs@debian.org> for
+ providing the code for this patch, which has since been
+ slightly modified.
+Change-Id: I539988ab2ad6df6c8f423ecec15364ad8fcc7267
+Bug-Ubuntu: https://bugs.launchpad.net/ubuntu/+source/nova/+bug/1807262
+Bug-Debian: https://bugs.debian.org/916046
+Last-Update: 2018-12-10
+
+--- a/migrate/changeset/databases/sqlite.py
++++ b/migrate/changeset/databases/sqlite.py
+@@ -9,6 +9,7 @@
+     from UserDict import DictMixin
+ from copy import copy
+ import re
++import sqlite3
+ 
+ from sqlalchemy.databases import sqlite as sa_base
+ from sqlalchemy.schema import ForeignKeyConstraint
+@@ -96,8 +97,15 @@
+             if omit_constraints is None or cons.name not in omit_constraints
+         ])
+ 
++        tup = sqlite3.sqlite_version_info
++        if tup[0] > 3 or (tup[0] == 3 and tup[1] >= 26):
++            self.append('PRAGMA legacy_alter_table = ON')
++            self.execute()
+         self.append('ALTER TABLE %s RENAME TO migration_tmp' % table_name)
+         self.execute()
++        if tup[0] > 3 or (tup[0] == 3 and tup[1] >= 26):
++            self.append('PRAGMA legacy_alter_table = OFF')
++            self.execute()
+ 
+         insertion_string = self._modify_table(table, column, delta)
+ 

@@ -1,0 +1,15 @@
+Description: Remove tempest-lib build-depends from upstream code
+Author: Thomas Goirand <zigo@debian.org>
+Forwarded: no
+Last-Update: 2018-04-27
+
+--- migrate-0.11.0.orig/test-requirements.txt
++++ migrate-0.11.0/test-requirements.txt
+@@ -16,7 +16,6 @@ sphinx>=1.1.2,<1.2
+ sphinxcontrib_issuetracker
+ testrepository>=0.0.17
+ testtools>=0.9.34,<0.9.36
+-tempest-lib>=0.1.0
+ 
+ scripttest
+ # NOTE(rpodolyaka): This version identifier is currently necessary as

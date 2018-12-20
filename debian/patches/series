@@ -1,0 +1,5 @@
+use-local-intersphinx.patch
+keep_empty_modules.patch
+disable_issuetracker.patch
+remove-tempest-lib-build-depends-from-upstream.patch
+use-legacy-alter-sqlite.patch
