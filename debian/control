@@ -1,8 +1,9 @@
 Source: migrate
 Section: python
 Priority: optional
-Maintainer: Debian OpenStack <team+openstack@tracker.debian.org>
-Uploaders:
+Maintainer: Pexip AS <packaging@pexip.com>
+XSBC-Pexip-Original-Maintainer: Debian OpenStack <team+openstack@tracker.debian.org>
+XSBC-Pexip-Original-Uploaders:
  Thomas Goirand <zigo@debian.org>,
  Jan Dittberner <jandd@debian.org>,
 Build-Depends:
@@ -56,6 +57,7 @@ Standards-Version: 4.1.0
 Homepage: https://github.com/openstack/sqlalchemy-migrate
 Vcs-Git: https://salsa.debian.org/openstack-team/libs/migrate.git
 Vcs-Browser: https://salsa.debian.org/openstack-team/libs/migrate
+XS-Pexip-Upstream: http://ftp.debian.org/debian/ buster
 
 Package: python-migrate
 Architecture: all
